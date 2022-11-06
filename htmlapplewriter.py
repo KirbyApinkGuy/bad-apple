@@ -1,26 +1,26 @@
 import numpy as np
 import cv2 as cv
-import time
+import filetype
 shades = ['1','0']
 framesize = 1
 badapple = False
+videodir = 0
 if not badapple:
-    while True:
-        try:
-            videodir = str(input("Enter Video Directory Here:"))
-            video_capture = cv.VideoCapture(videodir)
-            break
-        except Exception:
-            print('Invalid Directory. Enter a valid directory')
+    guess = filetype.guess(videodir)
+    while guess == None or not guess.mime.startswith('video'):
+        videodir = str(input("Enter Video Directory Here:"))
+        guess = filetype.guess(videodir)
 else:
     videodir = "Documents/badapple.mp4"
-    fps = 30
+    aspectratio = 8/3
+video_capture = cv.VideoCapture(videodir)
+aspectratio = 2*int(input("Enter aspect ratio here\nHorizontal ratio:"))/int(input("Vertical ratio:"))
 print("Calibrate screen size, enter d when T gets to top of screen")
 print("T")
 while input("|") != "d":
     framesize += 1
 print("ꓕ")
-dim = (round((8/3)*framesize),framesize)
+dim = (round(aspectratio*framesize),framesize)
 saved_frame_name = 0
 numframes = int(video_capture.get(cv.CAP_PROP_FRAME_COUNT))
 framenumber = 0
