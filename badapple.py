@@ -1,23 +1,26 @@
 import numpy as np
 import cv2 as cv
-import time
-shades = [' ','.','-','+','%','$','#']
+import filetype
+shades = [' ','`','.',',',':',';','\'','\"','^','*','-','_','!','|','?','1','[',']','7','{','}','/','\\','+','=','<','>','?','2','3','4','5','6','0','8','%','$','&','#']
 framesize = 1
-badapple = True
+badapple = False
+videodir = 0
 if not badapple:
-    videodir = str(input("Enter Video Directory Here:"))
-    fps = int(input("Input FPS of Video Here: (Higher than 24 will play slow.)"))
+    guess = filetype.guess(videodir)
+    while guess == None or not guess.mime.startswith('video'):
+        videodir = str(input("Enter Video Directory Here:"))
+        guess = filetype.guess(videodir)
 else:
     videodir = "Documents/badapple.mp4"
-    fps = 30
+    aspectratio = 8/3
+video_capture = cv.VideoCapture(videodir)
+aspectratio = 2*int(input("Enter aspect ratio here\nHorizontal ratio:"))/int(input("Vertical ratio:"))
 print("Calibrate screen size, enter d when T gets to top of screen")
 print("T")
 while input("|") != "d":
     framesize += 1
 print("ꓕ")
-dim = (round((8/3)*framesize),framesize)
-video_capture = cv.VideoCapture(videodir)
-video_capture.set(cv.CAP_PROP_FPS, fps)
+dim = (round(aspectratio*framesize),framesize)
 saved_frame_name = 0
 numframes = int(video_capture.get(cv.CAP_PROP_FRAME_COUNT))
 framenumber = 0
